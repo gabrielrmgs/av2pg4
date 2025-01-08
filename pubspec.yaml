@@ -37,6 +37,9 @@ dependencies:
   cupertino_icons: ^1.0.8
   lottie: ^3.2.0
   animated_text_kit: ^4.2.2
+  mask_text_input_formatter: ^2.9.0
+  intl: ^0.20.1
+  flutter_riverpod: ^2.6.1
 
 dev_dependencies:
   flutter_test:
@@ -67,6 +70,7 @@ flutter:
   - assets/contract.webp
   - assets/Pay Per Click Digital Marketing.json
   - assets/pAnimation.json
+  - assets/
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/to/resolution-aware-images
 
