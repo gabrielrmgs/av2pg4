@@ -1,14 +1,16 @@
 import 'package:flutter/material.dart';
-import 'package:sistema_de_reservas/pages/auth_page.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:sistema_de_reservas/models/space.dart';
+import 'package:sistema_de_reservas/providers/space_provider.dart';
 
-class MainPage extends StatefulWidget {
+class MainPage extends ConsumerStatefulWidget {
   const MainPage({super.key});
 
   @override
-  State<MainPage> createState() => _MainPageState();
+  ConsumerState<MainPage> createState() => _MainPageState();
 }
 
-class _MainPageState extends State<MainPage> {
+class _MainPageState extends ConsumerState<MainPage> {
   int pageIndex = 0;
   @override
   Widget build(BuildContext context) {
@@ -17,312 +19,76 @@ class _MainPageState extends State<MainPage> {
     const tColor = Color.fromARGB(255, 50, 130, 184);
     const qColor = Color.fromARGB(255, 187, 225, 250);
     final pageController = PageController(initialPage: pageIndex);
+    List<Space> spaces = ref.watch(spaceListProvider);
     return Scaffold(
+      appBar: AppBar(
+        elevation: 0,
+        backgroundColor: qColor,
+        automaticallyImplyLeading: true,
+        centerTitle: true,
+        title: const Text.rich(TextSpan(children: [
+          TextSpan(
+              text: 'Reserv',
+              style: TextStyle(
+                  color: sColor, fontSize: 36, fontWeight: FontWeight.bold)),
+          TextSpan(
+              text: 'APP',
+              style: TextStyle(
+                  color: pColor, fontSize: 36, fontWeight: FontWeight.bold))
+        ])),
+      ),
       body: PageView(
         children: [
-          SingleChildScrollView(
-              scrollDirection: Axis.vertical,
-              child: Padding(
-                padding: const EdgeInsets.only(
-                    top: 24.0, left: 9, right: 9, bottom: 12),
-                child: Column(
-                  children: [
-                    const Text.rich(TextSpan(children: [
-                      TextSpan(
-                          text: 'Reserv',
-                          style: TextStyle(
-                              color: sColor,
-                              fontSize: 36,
-                              fontWeight: FontWeight.bold)),
-                      TextSpan(
-                          text: 'APP',
-                          style: TextStyle(
-                              color: pColor,
-                              fontSize: 36,
-                              fontWeight: FontWeight.bold))
-                    ])),
-                    ElevatedButton(
-                        style: const ButtonStyle(
-                            fixedSize:
-                                WidgetStatePropertyAll(Size.fromWidth(270)),
-                            elevation: WidgetStatePropertyAll(3)),
-                        onPressed: () {
-                          Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) => const AuthPage()));
-                        },
-                        child: const Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Text('Pesquisar...'),
-                            Icon(Icons.search_outlined),
-                          ],
-                        )),
-                    Padding(
-                      padding: const EdgeInsets.only(top: 12.0),
-                      child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            SizedBox(
-                              height: 270,
-                              width: 180,
-                              child: Card(
-                                elevation: 2.4,
-                                surfaceTintColor: qColor,
-                                child: Padding(
-                                  padding: const EdgeInsets.only(top: 9),
-                                  child: Column(
-                                    children: [
-                                      Image.network(
-                                        'https://images.pexels.com/photos/11815444/pexels-photo-11815444.jpeg?auto=compress&cs=tinysrgb&w=600',
-                                        width: 150,
-                                        height: 110,
-                                      ),
-                                      const Padding(
-                                        padding: EdgeInsets.only(top: 15.0),
-                                        child: Column(
-                                          children: [
-                                            Text(
-                                              'Audório da UESPI',
-                                              style: TextStyle(
-                                                  fontSize: 18, color: pColor),
-                                            ),
-                                            Text(
-                                              '3 Horários vagos hoje',
-                                              style: TextStyle(color: sColor),
-                                            ),
-                                            Text(
-                                              '120 pessoas',
-                                              style: TextStyle(color: sColor),
-                                            ),
-                                          ],
-                                        ),
-                                      ),
-                                    ],
-                                  ),
+          Column(
+            children: [
+              Expanded(
+                child: GridView.builder(
+                  padding: const EdgeInsets.fromLTRB(15, 0, 15, 10),
+                  physics: const BouncingScrollPhysics(),
+                  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                    crossAxisCount: 2,
+                    mainAxisSpacing: 10,
+                    crossAxisSpacing: 10,
+                    childAspectRatio: 9 / 11,
+                  ),
+                  itemCount: spaces.length,
+                  itemBuilder: (context, index) {
+                    return Card(
+                      child: Column(
+                        children: [
+                          Image.network(
+                            spaces[index].imageURL,
+                            width: 150,
+                            height: 110,
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.only(top: 15.0),
+                            child: Column(
+                              children: [
+                                Text(
+                                  spaces[index].name,
+                                  style: const TextStyle(
+                                      fontSize: 18, color: pColor),
                                 ),
-                              ),
-                            ),
-                            SizedBox(
-                              height: 270,
-                              width: 180,
-                              child: Card(
-                                elevation: 2.4,
-                                surfaceTintColor: qColor,
-                                child: Padding(
-                                  padding: const EdgeInsets.only(top: 9),
-                                  child: Column(
-                                    children: [
-                                      Image.network(
-                                        'https://images.pexels.com/photos/159213/hall-congress-architecture-building-159213.jpeg?auto=compress&cs=tinysrgb&w=600',
-                                        width: 150,
-                                        height: 110,
-                                      ),
-                                      const Padding(
-                                        padding: EdgeInsets.only(top: 15.0),
-                                        child: Column(
-                                          children: [
-                                            Text(
-                                              'Salão de reuniões',
-                                              style: TextStyle(
-                                                  fontSize: 18, color: pColor),
-                                            ),
-                                            Text(
-                                              '1 Horário vago hoje',
-                                              style: TextStyle(color: sColor),
-                                            ),
-                                            Text(
-                                              '60 pessoas',
-                                              style: TextStyle(color: sColor),
-                                            ),
-                                          ],
-                                        ),
-                                      ),
-                                    ],
-                                  ),
+                                const Text(
+                                  '1 Horário vago hoje',
+                                  style: TextStyle(color: sColor),
                                 ),
-                              ),
-                            ),
-                          ]),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.only(top: 12.0),
-                      child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            SizedBox(
-                              height: 270,
-                              width: 180,
-                              child: Card(
-                                elevation: 2.4,
-                                surfaceTintColor: qColor,
-                                child: Padding(
-                                  padding: const EdgeInsets.only(top: 9),
-                                  child: Column(
-                                    children: [
-                                      Image.network(
-                                        'https://images.pexels.com/photos/11815444/pexels-photo-11815444.jpeg?auto=compress&cs=tinysrgb&w=600',
-                                        width: 150,
-                                        height: 110,
-                                      ),
-                                      const Padding(
-                                        padding: EdgeInsets.only(top: 15.0),
-                                        child: Column(
-                                          children: [
-                                            Text(
-                                              'Audório da UESPI',
-                                              style: TextStyle(
-                                                  fontSize: 18, color: pColor),
-                                            ),
-                                            Text(
-                                              '3 Horários vagos hoje',
-                                              style: TextStyle(color: sColor),
-                                            ),
-                                            Text(
-                                              '120 pessoas',
-                                              style: TextStyle(color: sColor),
-                                            ),
-                                          ],
-                                        ),
-                                      ),
-                                    ],
-                                  ),
+                                Text(
+                                  spaces[index].capacity,
+                                  style: const TextStyle(color: sColor),
                                 ),
-                              ),
+                              ],
                             ),
-                            SizedBox(
-                              height: 270,
-                              width: 180,
-                              child: Card(
-                                elevation: 2.4,
-                                surfaceTintColor: qColor,
-                                child: Padding(
-                                  padding: const EdgeInsets.only(top: 9),
-                                  child: Column(
-                                    children: [
-                                      Image.network(
-                                        'https://images.pexels.com/photos/159213/hall-congress-architecture-building-159213.jpeg?auto=compress&cs=tinysrgb&w=600',
-                                        width: 150,
-                                        height: 110,
-                                      ),
-                                      const Padding(
-                                        padding: EdgeInsets.only(top: 15.0),
-                                        child: Column(
-                                          children: [
-                                            Text(
-                                              'Salão de reuniões',
-                                              style: TextStyle(
-                                                  fontSize: 18, color: pColor),
-                                            ),
-                                            Text(
-                                              '1 Horário vago hoje',
-                                              style: TextStyle(color: sColor),
-                                            ),
-                                            Text(
-                                              '60 pessoas',
-                                              style: TextStyle(color: sColor),
-                                            ),
-                                          ],
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              ),
-                            ),
-                          ]),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.only(top: 12.0),
-                      child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            SizedBox(
-                              height: 270,
-                              width: 180,
-                              child: Card(
-                                elevation: 2.4,
-                                surfaceTintColor: qColor,
-                                child: Padding(
-                                  padding: const EdgeInsets.only(top: 9),
-                                  child: Column(
-                                    children: [
-                                      Image.network(
-                                        'https://images.pexels.com/photos/11815444/pexels-photo-11815444.jpeg?auto=compress&cs=tinysrgb&w=600',
-                                        width: 150,
-                                        height: 110,
-                                      ),
-                                      const Padding(
-                                        padding: EdgeInsets.only(top: 15.0),
-                                        child: Column(
-                                          children: [
-                                            Text(
-                                              'Audório da UESPI',
-                                              style: TextStyle(
-                                                  fontSize: 18, color: pColor),
-                                            ),
-                                            Text(
-                                              '3 Horários vagos hoje',
-                                              style: TextStyle(color: sColor),
-                                            ),
-                                            Text(
-                                              '120 pessoas',
-                                              style: TextStyle(color: sColor),
-                                            ),
-                                          ],
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              ),
-                            ),
-                            SizedBox(
-                              height: 270,
-                              width: 180,
-                              child: Card(
-                                elevation: 2.4,
-                                surfaceTintColor: qColor,
-                                child: Padding(
-                                  padding: const EdgeInsets.only(top: 9),
-                                  child: Column(
-                                    children: [
-                                      Image.network(
-                                        'https://images.pexels.com/photos/159213/hall-congress-architecture-building-159213.jpeg?auto=compress&cs=tinysrgb&w=600',
-                                        width: 150,
-                                        height: 110,
-                                      ),
-                                      const Padding(
-                                        padding: EdgeInsets.only(top: 15.0),
-                                        child: Column(
-                                          children: [
-                                            Text(
-                                              'Salão de reuniões',
-                                              style: TextStyle(
-                                                  fontSize: 18, color: pColor),
-                                            ),
-                                            Text(
-                                              '1 Horário vago hoje',
-                                              style: TextStyle(color: sColor),
-                                            ),
-                                            Text(
-                                              '60 pessoas',
-                                              style: TextStyle(color: sColor),
-                                            ),
-                                          ],
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              ),
-                            ),
-                          ]),
-                    ),
-                  ],
+                          ),
+                        ],
+                      ),
+                    );
+                  },
                 ),
-              )),
+              ),
+            ],
+          ),
           Container(
             color: pColor,
           ),

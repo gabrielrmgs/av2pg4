@@ -1,16 +1,18 @@
 import 'package:animated_text_kit/animated_text_kit.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:lottie/lottie.dart';
 import 'package:sistema_de_reservas/pages/main_page.dart';
+import 'package:sistema_de_reservas/providers/space_provider.dart';
 
-class AuthPage extends StatefulWidget {
+class AuthPage extends ConsumerStatefulWidget {
   const AuthPage({super.key});
 
   @override
-  State<AuthPage> createState() => _AuthPageState();
+  ConsumerState<AuthPage> createState() => _AuthPageState();
 }
 
-class _AuthPageState extends State<AuthPage> {
+class _AuthPageState extends ConsumerState<AuthPage> {
   @override
   Widget build(BuildContext context) {
     const pColor = Color.fromARGB(255, 27, 38, 44);
@@ -106,6 +108,7 @@ class _AuthPageState extends State<AuthPage> {
               style: const ButtonStyle(
                   backgroundColor: WidgetStatePropertyAll(sColor)),
               onPressed: () {
+                ref.read(spaceRepositoryProvider.notifier).getSpaces();
                 Navigator.push(
                     context,
                     MaterialPageRoute(
