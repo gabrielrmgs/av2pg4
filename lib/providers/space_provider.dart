@@ -24,6 +24,7 @@ class SpaceProvider extends StateNotifier<List<Space>> {
   final String url = 'https://reserv-app-77552-default-rtdb.firebaseio.com/';
 
   getSpaces() async {
+    state.clear();
     final response = await http.get(Uri.parse('${url}spaces.json'));
     final Map data = jsonDecode(response.body);
     data.forEach(

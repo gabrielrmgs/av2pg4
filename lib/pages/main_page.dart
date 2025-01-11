@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:sistema_de_reservas/models/space.dart';
+import 'package:sistema_de_reservas/pages/auth_page.dart';
+import 'package:sistema_de_reservas/pages/space_detail.dart';
 import 'package:sistema_de_reservas/providers/space_provider.dart';
 
 class MainPage extends ConsumerStatefulWidget {
@@ -24,7 +26,7 @@ class _MainPageState extends ConsumerState<MainPage> {
       appBar: AppBar(
         elevation: 0,
         backgroundColor: qColor,
-        automaticallyImplyLeading: true,
+        automaticallyImplyLeading: false,
         centerTitle: true,
         title: const Text.rich(TextSpan(children: [
           TextSpan(
@@ -53,35 +55,45 @@ class _MainPageState extends ConsumerState<MainPage> {
                   ),
                   itemCount: spaces.length,
                   itemBuilder: (context, index) {
-                    return Card(
-                      child: Column(
-                        children: [
-                          Image.network(
-                            spaces[index].imageURL,
-                            width: 150,
-                            height: 110,
-                          ),
-                          Padding(
-                            padding: const EdgeInsets.only(top: 15.0),
-                            child: Column(
-                              children: [
-                                Text(
-                                  spaces[index].name,
-                                  style: const TextStyle(
-                                      fontSize: 18, color: pColor),
-                                ),
-                                const Text(
-                                  '1 Horário vago hoje',
-                                  style: TextStyle(color: sColor),
-                                ),
-                                Text(
-                                  spaces[index].capacity,
-                                  style: const TextStyle(color: sColor),
-                                ),
-                              ],
+                    return GestureDetector(
+                      onTap: () {
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) =>
+                                  SpaceDetail(space: spaces[index]),
+                            ));
+                      },
+                      child: Card(
+                        child: Column(
+                          children: [
+                            Image.network(
+                              spaces[index].imageURL,
+                              width: 150,
+                              height: 110,
                             ),
-                          ),
-                        ],
+                            Padding(
+                              padding: const EdgeInsets.only(top: 15.0),
+                              child: Column(
+                                children: [
+                                  Text(
+                                    spaces[index].name,
+                                    style: const TextStyle(
+                                        fontSize: 18, color: pColor),
+                                  ),
+                                  const Text(
+                                    '1 Horário vago hoje',
+                                    style: TextStyle(color: sColor),
+                                  ),
+                                  Text(
+                                    spaces[index].capacity,
+                                    style: const TextStyle(color: sColor),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ],
+                        ),
                       ),
                     );
                   },
