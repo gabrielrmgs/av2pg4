@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:sistema_de_reservas/models/space.dart';
 import 'package:http/http.dart' as http;
+import 'package:firebase_auth/firebase_auth.dart';
 
 final spaceRepositoryProvider =
     StateNotifierProvider<SpaceProvider, List<Space>>(

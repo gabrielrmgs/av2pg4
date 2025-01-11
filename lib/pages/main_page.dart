@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:sistema_de_reservas/models/space.dart';
-import 'package:sistema_de_reservas/pages/auth_page.dart';
 import 'package:sistema_de_reservas/pages/space_detail.dart';
 import 'package:sistema_de_reservas/providers/space_provider.dart';
 
@@ -82,7 +81,7 @@ class _MainPageState extends ConsumerState<MainPage> {
                                         fontSize: 18, color: pColor),
                                   ),
                                   const Text(
-                                    '1 Horário vago hoje',
+                                    '3 Horários vagos hoje',
                                     style: TextStyle(color: sColor),
                                   ),
                                   Text(

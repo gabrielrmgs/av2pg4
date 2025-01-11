@@ -36,6 +36,12 @@ class SpaceDetail extends StatelessWidget {
               'Capacidade para ${space.capacity}',
               style: const TextStyle(fontSize: 21),
             ),
+            Text(
+              space.adress.street,
+            ),
+            Text(
+              '${space.adress.district}, ${space.adress.number}',
+            ),
           ],
         ),
       ),

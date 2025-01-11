@@ -80,11 +80,13 @@ class Contact {
 class Adress {
   final String street;
   final String district;
-  final int number;
+  final String number;
+  final String cep;
   Adress({
     required this.street,
     required this.district,
     required this.number,
+    required this.cep,
   });
 
   Map<String, dynamic> toMap() {
@@ -92,6 +94,7 @@ class Adress {
       'street': street,
       'district': district,
       'number': number,
+      'cep': cep,
     };
   }
 
@@ -99,7 +102,8 @@ class Adress {
     return Adress(
       street: map['street'] as String,
       district: map['district'] as String,
-      number: map['number'] as int,
+      number: map['number'] as String,
+      cep: map['cep'] as String,
     );
   }
 
@@ -107,4 +111,9 @@ class Adress {
 
   factory Adress.fromJson(String source) =>
       Adress.fromMap(json.decode(source) as Map<String, dynamic>);
+
+  @override
+  String toString() {
+    return 'Adress(street: $street, district: $district, number: $number, cep: $cep)';
+  }
 }
