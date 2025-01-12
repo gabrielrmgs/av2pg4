@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:flutter/foundation.dart';
 
 import 'package:http/http.dart' as http;
 import 'package:sistema_de_reservas/models/user.dart';
@@ -12,7 +13,7 @@ class AuthService {
     'Content-Type': 'application/json',
   };
 
-  Future<User?> singUp({
+  Future<User?> signUp({
     required String email,
     required String password,
     required String name,
@@ -26,9 +27,11 @@ class AuthService {
       'returnSecureToken': false,
     });
 
-    final response = await http.post(url, body: resquestBody);
+    final response =
+        await http.post(url, headers: apiHeaders, body: resquestBody);
 
     if (response.statusCode != 200) {
+      debugPrint('Status Code text: ${response.reasonPhrase}');
       return null;
     }
 
@@ -51,12 +54,12 @@ class AuthService {
         email: email,
         age: age,
         credentials: UserCredentials(
-            token: credentials['token'],
+            token: credentials['idToken'],
             refreshToken: credentials['refreshToken'],
-            expiresIn: credentials['expiresIn']));
+            expiresIn: int.parse(credentials['expiresIn'])));
   }
 
-  Future<User?> signIn(String email, String password) async {
+  Future<bool> signIn(String email, String password) async {
     final url = Uri.parse('$authApi:signInWithPassword?key=$apiKey');
 
     final body = jsonEncode({
@@ -72,8 +75,8 @@ class AuthService {
     );
 
     if (reponse.statusCode != 200) {
-      return null;
+      return false;
     }
-    throw Exception();
+    return true;
   }
 }

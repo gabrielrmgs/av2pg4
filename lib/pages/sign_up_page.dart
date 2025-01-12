@@ -2,19 +2,19 @@ import 'package:animated_text_kit/animated_text_kit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:lottie/lottie.dart';
+import 'package:sistema_de_reservas/pages/auth_page.dart';
 import 'package:sistema_de_reservas/pages/main_page.dart';
-import 'package:sistema_de_reservas/pages/sign_up_page.dart';
 import 'package:sistema_de_reservas/providers/space_provider.dart';
 import 'package:sistema_de_reservas/services/auth_service.dart';
 
-class AuthPage extends ConsumerStatefulWidget {
-  const AuthPage({super.key});
+class SignUpPage extends ConsumerStatefulWidget {
+  const SignUpPage({super.key});
 
   @override
-  ConsumerState<AuthPage> createState() => _AuthPageState();
+  ConsumerState<SignUpPage> createState() => _SignUpPageState();
 }
 
-class _AuthPageState extends ConsumerState<AuthPage> {
+class _SignUpPageState extends ConsumerState<SignUpPage> {
   @override
   Widget build(BuildContext context) {
     const pColor = Color.fromARGB(255, 27, 38, 44);
@@ -34,6 +34,8 @@ class _AuthPageState extends ConsumerState<AuthPage> {
     TextEditingController textEditingControllerEmail = TextEditingController();
     TextEditingController textEditingControllerPassword =
         TextEditingController();
+    TextEditingController textEditingControllerName = TextEditingController();
+    TextEditingController textEditingControllerAge = TextEditingController();
 
     final categories = categoriasReserva.map(
       (name) => FadeAnimatedText(
@@ -46,33 +48,42 @@ class _AuthPageState extends ConsumerState<AuthPage> {
       ),
     );
     return Scaffold(
+      appBar: AppBar(
+          toolbarHeight: 69,
+          centerTitle: true,
+          backgroundColor: qColor,
+          elevation: 0,
+          automaticallyImplyLeading: false,
+          title: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                const Text.rich(TextSpan(children: [
+                  TextSpan(
+                      text: 'Reserv',
+                      style: TextStyle(
+                          color: sColor,
+                          fontSize: 36,
+                          fontWeight: FontWeight.bold)),
+                  TextSpan(
+                      text: 'APP',
+                      style: TextStyle(
+                          color: pColor,
+                          fontSize: 36,
+                          fontWeight: FontWeight.bold))
+                ])),
+                SizedBox(
+                  height: 30,
+                  child: AnimatedTextKit(
+                      repeatForever: true, animatedTexts: categories.toList()),
+                ),
+              ])),
       backgroundColor: qColor,
       body: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          const Text.rich(TextSpan(children: [
-            TextSpan(
-                text: 'Reserv',
-                style: TextStyle(
-                    color: sColor, fontSize: 36, fontWeight: FontWeight.bold)),
-            TextSpan(
-                text: 'APP',
-                style: TextStyle(
-                    color: pColor, fontSize: 36, fontWeight: FontWeight.bold))
-          ])),
-          SizedBox(
-            height: 30,
-            child: AnimatedTextKit(
-                repeatForever: true, animatedTexts: categories.toList()),
-          ),
-          Container(
-            margin: const EdgeInsets.only(top: 0, bottom: 21),
-            child: SizedBox(
-              height: 333,
-              width: 333,
-              child: Lottie.asset('assets/pAnimation.json', fit: BoxFit.fill),
-            ),
+          Lottie.asset(
+            'assets/Pay Per Click Digital Marketing.json',
+            height: 300,
           ),
           Padding(
             padding: const EdgeInsets.only(left: 33, right: 33),
@@ -91,7 +102,7 @@ class _AuthPageState extends ConsumerState<AuthPage> {
           ),
           Padding(
             padding:
-                const EdgeInsets.only(left: 33, right: 33, top: 24, bottom: 39),
+                const EdgeInsets.only(left: 33, right: 33, top: 21, bottom: 21),
             child: TextFormField(
               controller: textEditingControllerPassword,
               decoration: const InputDecoration(
@@ -105,21 +116,52 @@ class _AuthPageState extends ConsumerState<AuthPage> {
                       borderRadius: BorderRadius.all(Radius.circular(33)))),
             ),
           ),
+          Padding(
+            padding: const EdgeInsets.only(left: 33, right: 33),
+            child: TextFormField(
+              controller: textEditingControllerName,
+              decoration: const InputDecoration(
+                  isDense: true,
+                  labelStyle: TextStyle(color: pColor),
+                  focusedBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.all(Radius.circular(33)),
+                      borderSide: BorderSide(color: sColor, width: 1.8)),
+                  labelText: 'Nome',
+                  border: OutlineInputBorder(
+                      borderRadius: BorderRadius.all(Radius.circular(33)))),
+            ),
+          ),
+          Padding(
+            padding:
+                const EdgeInsets.only(left: 33, right: 33, top: 21, bottom: 12),
+            child: TextFormField(
+              controller: textEditingControllerAge,
+              decoration: const InputDecoration(
+                  isDense: true,
+                  labelStyle: TextStyle(color: pColor),
+                  focusedBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.all(Radius.circular(33)),
+                      borderSide: BorderSide(color: sColor, width: 1.8)),
+                  labelText: 'Idade',
+                  border: OutlineInputBorder(
+                      borderRadius: BorderRadius.all(Radius.circular(33)))),
+            ),
+          ),
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               const Text(
-                'Não possui uma conta? ',
+                'Já possui uma conta? ',
                 style: TextStyle(color: pColor),
               ),
               GestureDetector(
                 onTap: () => Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (context) => const SignUpPage(),
+                      builder: (context) => const AuthPage(),
                     )),
                 child: const Text(
-                  'Registre-se',
+                  'Entre',
                   style: TextStyle(color: sColor),
                 ),
               )
@@ -130,11 +172,15 @@ class _AuthPageState extends ConsumerState<AuthPage> {
               style: const ButtonStyle(
                   backgroundColor: WidgetStatePropertyAll(sColor)),
               onPressed: () async {
-                if (!await _authService.signIn(textEditingControllerEmail.text,
-                    textEditingControllerPassword.text)) {
+                if (await _authService.signUp(
+                        email: textEditingControllerEmail.text,
+                        password: textEditingControllerPassword.text,
+                        name: textEditingControllerName.text,
+                        age: int.parse(textEditingControllerAge.text)) ==
+                    null) {
                   if (context.mounted) {
                     ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-                      content: Text('E-mail ou senha inválidos!'),
+                      content: Text('Não foi possível realizar o cadastro!'),
                       duration: Duration(seconds: 2),
                       showCloseIcon: true,
                       clipBehavior: Clip.antiAliasWithSaveLayer,
@@ -144,13 +190,20 @@ class _AuthPageState extends ConsumerState<AuthPage> {
                   }
                   return;
                 }
-                ref.read(spaceRepositoryProvider.notifier).getSpaces();
                 if (context.mounted) {
                   Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (context) => const MainPage(),
+                        builder: (context) => const AuthPage(),
                       ));
+                  ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                    content: Text('Cadastro realizado com sucesso!'),
+                    duration: Duration(seconds: 2),
+                    showCloseIcon: true,
+                    clipBehavior: Clip.antiAliasWithSaveLayer,
+                    behavior: SnackBarBehavior.floating,
+                    hitTestBehavior: HitTestBehavior.opaque,
+                  ));
                 }
               },
               child: const SizedBox(
@@ -159,11 +212,11 @@ class _AuthPageState extends ConsumerState<AuthPage> {
                     mainAxisAlignment: MainAxisAlignment.spaceAround,
                     children: [
                       Text(
-                        'Login',
+                        'Cadastrar',
                         style: TextStyle(color: qColor, fontSize: 18),
                       ),
                       Icon(
-                        Icons.login,
+                        Icons.account_box_outlined,
                         color: qColor,
                       )
                     ]),
