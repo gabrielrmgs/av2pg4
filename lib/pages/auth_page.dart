@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:lottie/lottie.dart';
 import 'package:sistema_de_reservas/pages/main_page.dart';
 import 'package:sistema_de_reservas/providers/space_provider.dart';
+import 'package:sistema_de_reservas/services/auth_service.dart';
 
 class AuthPage extends ConsumerStatefulWidget {
   const AuthPage({super.key});
@@ -26,6 +27,13 @@ class _AuthPageState extends ConsumerState<AuthPage> {
       'Apartamentos',
       'Casas'
     ];
+
+    final _authService = AuthService();
+
+    TextEditingController textEditingControllerEmail = TextEditingController();
+    TextEditingController textEditingControllerPassword =
+        TextEditingController();
+
     final categories = categoriasReserva.map(
       (name) => FadeAnimatedText(
         name,
@@ -68,13 +76,14 @@ class _AuthPageState extends ConsumerState<AuthPage> {
           Padding(
             padding: const EdgeInsets.only(left: 33, right: 33),
             child: TextFormField(
+              controller: textEditingControllerEmail,
               decoration: const InputDecoration(
                   isDense: true,
                   labelStyle: TextStyle(color: pColor),
                   focusedBorder: OutlineInputBorder(
                       borderRadius: BorderRadius.all(Radius.circular(33)),
                       borderSide: BorderSide(color: sColor, width: 1.8)),
-                  labelText: 'Usuário',
+                  labelText: 'E-mail',
                   border: OutlineInputBorder(
                       borderRadius: BorderRadius.all(Radius.circular(33.0)))),
             ),
@@ -83,6 +92,7 @@ class _AuthPageState extends ConsumerState<AuthPage> {
             padding:
                 const EdgeInsets.only(left: 33, right: 33, top: 24, bottom: 39),
             child: TextFormField(
+              controller: textEditingControllerPassword,
               decoration: const InputDecoration(
                   isDense: true,
                   labelStyle: TextStyle(color: pColor),
@@ -94,26 +104,34 @@ class _AuthPageState extends ConsumerState<AuthPage> {
                       borderRadius: BorderRadius.all(Radius.circular(33)))),
             ),
           ),
-          const Text.rich(TextSpan(children: [
-            TextSpan(
-                text: 'Não possui uma conta? ',
-                style: TextStyle(color: pColor)),
-            TextSpan(
-                text: 'Registre-se',
-                style: TextStyle(color: tColor),
-                spellOut: true)
-          ])),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              const Text(
+                'Não possui uma conta? ',
+                style: TextStyle(color: pColor),
+              ),
+              GestureDetector(
+                onTap: () => Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => const MainPage(),
+                    )),
+                child: const Text(
+                  'Resgistre-se',
+                  style: TextStyle(color: sColor),
+                ),
+              )
+            ],
+          ),
           ElevatedButton(
               iconAlignment: IconAlignment.end,
               style: const ButtonStyle(
                   backgroundColor: WidgetStatePropertyAll(sColor)),
-              onPressed: () {
+              onPressed: () async {
+                await _authService.signIn(textEditingControllerEmail.text,
+                    textEditingControllerPassword.text);
                 ref.read(spaceRepositoryProvider.notifier).getSpaces();
-                Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => const MainPage(),
-                    ));
               },
               child: const SizedBox(
                 width: 210,
