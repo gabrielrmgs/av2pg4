@@ -4,6 +4,7 @@ import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
 import 'package:sistema_de_reservas/models/user.dart';
 import 'package:sistema_de_reservas/models/user_credentials.dart';
+import 'package:sistema_de_reservas/providers/user_provider.dart';
 
 class AuthService {
   final apiKey = 'AIzaSyBEZ-xCPo7BhOxONr2V359RgNGsev8UBCo';
@@ -59,7 +60,7 @@ class AuthService {
             expiresIn: int.parse(credentials['expiresIn'])));
   }
 
-  Future<bool> signIn(String email, String password) async {
+  Future<User?> signIn(String email, String password) async {
     final url = Uri.parse('$authApi:signInWithPassword?key=$apiKey');
 
     final body = jsonEncode({
@@ -75,8 +76,39 @@ class AuthService {
     );
 
     if (reponse.statusCode != 200) {
-      return false;
+      return null;
     }
-    return true;
+
+    final dataSign = jsonDecode(reponse.body);
+
+    final urlUser = Uri.parse('$apiUrl/users/${dataSign['localId']}.json');
+    final response = await http.get(urlUser);
+    final dataUser = jsonDecode(response.body);
+
+    return User(
+        id: dataSign['localId'],
+        name: dataUser['name'],
+        email: dataUser['email'],
+        age: dataUser['age'],
+        credentials: UserCredentials(
+          token: dataSign['idToken'],
+          refreshToken: dataSign['refreshToken'],
+          expiresIn: int.parse(dataSign['expiresIn']),
+        ));
+
+    //return dataSign['idToken'];
+    /* final urlCred = Uri.parse('$authApi:lookup?key=$apiKey');
+
+    final bodyCred = {
+      'idToken': dataSign['idToken'],
+    };
+
+    final responseCred = await http.post(
+      urlCred,
+      headers: apiHeaders,
+      body: bodyCred,
+    );
+
+    final dataCred = jsonDecode(responseCred.body); */
   }
 }

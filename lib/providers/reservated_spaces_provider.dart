@@ -3,13 +3,13 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:sistema_de_reservas/models/space.dart';
 import 'package:http/http.dart' as http;
 
-final spaceRepositoryProvider =
-    StateNotifierProvider<SpaceProvider, List<Space>>(
-  (ref) => SpaceProvider(),
+final reservatedSpaceRepositoryProvider =
+    StateNotifierProvider<ReservatedSpacesProvider, List<Space>>(
+  (ref) => ReservatedSpacesProvider(),
 );
-final spaceListProvider = Provider(
+final reservatedSpaceListProvider = Provider(
   (ref) {
-    final List<Space> spaces = ref.watch(spaceRepositoryProvider);
+    final List<Space> spaces = ref.watch(reservatedSpaceRepositoryProvider);
     return spaces
         .where(
           (space) => space.active,
@@ -18,8 +18,8 @@ final spaceListProvider = Provider(
   },
 );
 
-class SpaceProvider extends StateNotifier<List<Space>> {
-  SpaceProvider() : super([]);
+class ReservatedSpacesProvider extends StateNotifier<List<Space>> {
+  ReservatedSpacesProvider() : super([]);
 
   final String url = 'https://reserv-app-77552-default-rtdb.firebaseio.com/';
 

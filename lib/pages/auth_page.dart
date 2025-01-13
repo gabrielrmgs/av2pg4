@@ -4,7 +4,10 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:lottie/lottie.dart';
 import 'package:sistema_de_reservas/pages/main_page.dart';
 import 'package:sistema_de_reservas/pages/sign_up_page.dart';
+import 'package:sistema_de_reservas/providers/reservated_spaces_provider.dart';
+import 'package:sistema_de_reservas/providers/reservation_provider.dart';
 import 'package:sistema_de_reservas/providers/space_provider.dart';
+import 'package:sistema_de_reservas/providers/user_provider.dart';
 import 'package:sistema_de_reservas/services/auth_service.dart';
 
 class AuthPage extends ConsumerStatefulWidget {
@@ -130,13 +133,16 @@ class _AuthPageState extends ConsumerState<AuthPage> {
               style: const ButtonStyle(
                   backgroundColor: WidgetStatePropertyAll(sColor)),
               onPressed: () async {
-                if (!await _authService.signIn(textEditingControllerEmail.text,
-                    textEditingControllerPassword.text)) {
+                final dataT = await _authService.signIn(
+                    textEditingControllerEmail.text,
+                    textEditingControllerPassword.text);
+                if (dataT == null) {
                   if (context.mounted) {
-                    ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-                      content: Text('E-mail ou senha inválidos!'),
-                      duration: Duration(seconds: 2),
+                    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                      content: const Text('E-mail ou senha inválidos!'),
+                      duration: const Duration(seconds: 2),
                       showCloseIcon: true,
+                      backgroundColor: Colors.red[400],
                       clipBehavior: Clip.antiAliasWithSaveLayer,
                       behavior: SnackBarBehavior.floating,
                       hitTestBehavior: HitTestBehavior.opaque,
@@ -144,7 +150,16 @@ class _AuthPageState extends ConsumerState<AuthPage> {
                   }
                   return;
                 }
+                ref.read(userProvider.notifier).setUserInfo(dataT);
                 ref.read(spaceRepositoryProvider.notifier).getSpaces();
+                ref
+                    .read(reservatedSpaceRepositoryProvider.notifier)
+                    .getSpaceByUserId(dataT.id);
+                ref
+                    .read(reservationRepositoryProvider.notifier)
+                    .getReservationsByUserId(dataT.id);
+                textEditingControllerPassword.clear();
+                textEditingControllerEmail.clear();
                 if (context.mounted) {
                   Navigator.push(
                       context,
@@ -159,7 +174,7 @@ class _AuthPageState extends ConsumerState<AuthPage> {
                     mainAxisAlignment: MainAxisAlignment.spaceAround,
                     children: [
                       Text(
-                        'Login',
+                        'Entrar',
                         style: TextStyle(color: qColor, fontSize: 18),
                       ),
                       Icon(
